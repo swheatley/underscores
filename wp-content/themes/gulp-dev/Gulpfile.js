@@ -1,4 +1,5 @@
 var themename = 'humescores';
+// Theme you want it to be applied to.
 
 var gulp = require('gulp'),
 	// Prepare and optimize code etc
@@ -26,7 +27,7 @@ gulp.task('css', function() {
 	return gulp.src(scss + '{style.scss,rtl.scss}')
 	.pipe(sourcemaps.init())
 	.pipe(sass({
-		outputStyle: 'expanded', 
+		outputStyle: 'expanded',
 		indentType: 'tab',
 		indentWidth: '1'
 	}).on('error', sass.logError))
@@ -56,9 +57,9 @@ gulp.task('javascript', function() {
 
 // Watch everything
 gulp.task('watch', function() {
-	browserSync.init({ 
+	browserSync.init({
 		open: 'external',
-		proxy: 'humescores.dev',
+		proxy: 'localhost:8888/underscores/',
 		port: 8080
 	});
 	gulp.watch([root + '**/*.css', root + '**/*.scss' ], ['css']);

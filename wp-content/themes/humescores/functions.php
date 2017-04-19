@@ -9,13 +9,15 @@
 
 if ( ! function_exists( 'humescores_setup' ) ) :
 /**
- * Sets up theme defaults and registers support for various WordPress features.
+ * Sets up theme defaults and registers support for various
+ * WordPress features.
  *
  * Note that this function is hooked into the after_setup_theme hook, which
  * runs before the init hook. The init hook is too late for some features, such
  * as indicating support for post thumbnails.
  */
 function humescores_setup() {
+	// Theme setup function
 	/*
 	 * Make theme available for translation.
 	 * Translations can be filed in the /languages/ directory.
@@ -41,11 +43,22 @@ function humescores_setup() {
 	 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
 	 */
 	add_theme_support( 'post-thumbnails' );
+	/*
+	  Featured Image page.  If you want to be able to display a featured
+	  image this code needs to be in your theme setup.
+		If it isn't there it won't be available in the backend setup.
+
+	*/
 
 	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus( array(
 		'menu-1' => esc_html__( 'Primary', 'humescores' ),
 	) );
+
+	/*
+	  Copy register_nav_menus provide it with a human readable name
+	  then you will have two nav locations
+	*/
 
 	/*
 	 * Switch default core markup for search form, comment form, and comments
@@ -70,6 +83,43 @@ function humescores_setup() {
 }
 endif;
 add_action( 'after_setup_theme', 'humescores_setup' );
+
+function humescores_fonts_url() {
+	$fonts_url = '';
+
+	/**
+	 * Translators: If there are characters in your language that are not
+	 * supported by Source Sans Pro and PT Serif, translate this to 'off'. Do not translate
+	 * into your own language.
+	 */
+
+	$source_sans_pro = _x( 'on', 'Source Sans Pro font: on or off', 'humescores' );
+	$pt_serif = _x( 'on', 'PT Serif: on or off', 'humescores' );
+
+	$font_families = array();
+
+	if ( 'off' !== $source_sans_pro ) {
+		$font_families[] = 'Source Sans Pro: 400, 400i, 700, 900';
+
+	}
+	if ( 'off' !== $pt_serif ) {
+		$font_families[] = 'PT Serif: 400, 400i 700, 700i';
+
+	}
+
+	if ( in_array( 'on', array($source_sans_pro, $pt_serif)) ) {
+
+		$query_args = array(
+			'family' => urlencode( implode( '|', $font_families ) ),
+			'subset' => urlencode( 'latin,latin-ext' ),
+		);
+
+		$fonts_url = add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
+	}
+
+	return esc_url_raw( $fonts_url );
+}
+
 
 /**
  * Set the content width in pixels, based on the theme's design and stylesheet.
@@ -99,12 +149,15 @@ function humescores_widgets_init() {
 		'after_title'   => '</h2>',
 	) );
 }
+// register_sidebar is where you put the widgets
 add_action( 'widgets_init', 'humescores_widgets_init' );
 
 /**
  * Enqueue scripts and styles.
  */
 function humescores_scripts() {
+	// Enqueue Google Fonts: Source Sans Pro and PT Serif
+	wp_enqueue_style('humescores-fonts', humescores_fonts_url());
 	wp_enqueue_style( 'humescores-style', get_stylesheet_uri() );
 
 	wp_enqueue_script( 'humescores-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
@@ -115,6 +168,12 @@ function humescores_scripts() {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
+/*
+	wp_enqueue_style()
+  wp_enqueue_script()
+    Only load the javascript and style sheets when they are needed.
+*/
+
 add_action( 'wp_enqueue_scripts', 'humescores_scripts' );
 
 /**
