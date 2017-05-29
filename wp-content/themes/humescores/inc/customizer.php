@@ -1,6 +1,6 @@
 <?php
 /**
- * Humescores Theme Customizer
+ * Humescores Theme Customizer.
  *
  * @package Humescores
  */
